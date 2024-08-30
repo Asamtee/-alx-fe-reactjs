@@ -4,6 +4,7 @@ import AddRecipeForm from "./components/AddRecipeForm";
 import RecipeDetails from "./components/RecipeDetails";
 import SearchBar from "./components/SearchBar";
 import RecommendationsList from "./components/RecommendationsList";
+import FavouriteList from "./components/FavoriteList";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <SearchBar style={{ marginBottom: "20px" }} />
         <AddRecipeForm />
         <RecommendationsList />
+        <FavouriteList />
         <Routes>
           <Route path="/" element={<RecipeList />} />
           <Route path="/recipe/:recipeId" element={<RecipeDetails />} />
