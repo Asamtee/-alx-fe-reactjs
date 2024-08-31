@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import ProfileDetails from "./components/ProfileDetails";
 import ProfileSettings from "./components/ProfileSettings";
 import Blog from "./components/Blog";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -22,5 +23,26 @@ function App() {
     </>
   );
 }
+const App = () => {
+  return (
+    <BrowserRouter>
+      <div>
+        // Navigation links
+        <ul>
+          <li>
+            <Link to="/profile">Profile</Link>
+          </li>
+          <li>
+            <Link to="/login">Login</Link>
+          </li>
+        </ul>
+        // Login page route
+        <Route path="/login" component={Login} />
+        // Protected profile page route
+        <ProtectedRoute path="/profile" component={Profile} />
+      </div>
+    </BrowserRouter>
+  );
+};
 
 export default App;

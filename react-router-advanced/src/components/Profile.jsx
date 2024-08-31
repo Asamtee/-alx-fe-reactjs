@@ -7,6 +7,11 @@ const Profile = () => {
   return (
     <>
       <div>Profile Page </div>
+      <div>
+        <h1>Profile Page</h1>
+        // Logout button
+        <button onClick={() => fakeAuth.signout(() => window.location.href = './login')}>Logout</button>
+      </div>
       <nav>
         <Link to="details"> Details </Link>
         <Link to="settings"> Settings </Link>
