@@ -1,39 +1,16 @@
-import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import React from "react";
+import { useAuth } from "./auth";
+import { Navigate, useLocation } from "react-router-dom";
 
-// Fake authentication object
-const fakeAuth = {
-  isAuthenticated: false,
-  authenticate() {
-    fakeAuth.isAuthenticated = true;
-  },
-  signout() {
-    fakeAuth.isAuthenticated = false;
-  },
-};
+const ProtectedRoute = ({ children }) => {
+  const auth = useAuth();
+  const location = useLocation();
 
-// ProtectedRoute component definition
-const ProtectedRoute = ({ component: Component, ...rest }) => {
-  return (
-    // Route component from react-router-dom
-    <Route
-      {...rest}
-      render={(props) =>
-        // Check if user is authenticated
-        fakeAuth.isAuthenticated ? (
-          // If authenticated, render the protected component
-          <Component {...props} />
-        ) : (
-          <Redirect
-            to={{
-              pathname: '/login',
-              state: { from: props.location },
-            }}
-          />
-        )
-      }
-    />
-  );
+  if (!auth.user) {
+    return <Navigate to="/Login" state={{ path: location.pathname }} />;
+  }
+
+  return children;
 };
 
 export default ProtectedRoute;

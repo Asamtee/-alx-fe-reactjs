@@ -1,17 +1,34 @@
 import React from "react";
 import { Routes, Route, Link, Outlet } from "react-router-dom";
-import ProfileDetails from "./components/ProfileDetails";
-import ProfileSettings from "./components/ProfileSettings";
+import { useAuth } from "./auth";
+import { useNavigate } from "react-router-dom";
+import ProfileDetails from "./ProfileDetails";
+import ProfileSetting from "./ProfileSettings";
 
 const Profile = () => {
+  const auth = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    auth.logout();
+    navigate("/");
+  };
+
   return (
     <>
-      <div>Profile Page </div>
-      <div>
-        <h1>Profile Page</h1>
-        // Logout button
-        <button onClick={() => fakeAuth.signout(() => window.location.href = './login')}>Logout</button>
+      <div
+        style={{
+          display: "flex",
+          gap: "2rem",
+          alignItems: "center",
+          marginTop: "2rem",
+          marginBottom: "2rem",
+        }}
+      >
+        <div>Welcome {auth.user}</div>
+        <button onClick={handleLogout}> Logout </button>
       </div>
+
       <nav>
         <Link to="details"> Details </Link>
         <Link to="settings"> Settings </Link>
