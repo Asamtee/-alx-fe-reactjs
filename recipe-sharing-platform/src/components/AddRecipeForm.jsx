@@ -70,7 +70,7 @@ const AddRecipeForm = () => {
       <h1 className="pl-8 mt-8 text-green-950">ADD A NEW RECIPE</h1>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-2 mt-6  pl-8 w-96"
+        className="font-medium flex flex-col gap-2 mx-6 mb-16 p-8 w-[400px] md:w-[600] border-solid border-blue-900 rounded shadow-gray-600"
       >
         <label htmlFor="title">Recipe title</label>
         <input
