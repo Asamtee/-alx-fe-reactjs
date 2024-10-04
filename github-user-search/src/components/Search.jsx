@@ -1,60 +1,51 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { fetchUserData } from "../services/githubService";
 
 const Search = () => {
-  const [username, setUsername] = useState("");
-  const [location, setLocation] = useState("");
-  const [minRepos, setMinRepos] = useState("");
+  const [searchParams, setSearchParams] = useState({
+    username: "",
+    location: "",
+    minRepos: "",
+  });
   const [userData, setUserData] = useState({ total_count: 0, users: [] });
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState({ loading: "", error: null });
   const [page, setPage] = useState(1);
   const [perPage] = useState(30);
 
   const handleChange = (e) => {
-    console.log(e);
     const { name, value } = e.target;
-    if (name === "username") {
-      setUsername(value);
-    } else if (name === "location") {
-      setLocation(value);
-    } else if (name === "minRepos") {
-      setMinRepos(value);
-    }
+    setSearchParams((prevParams) => ({
+      ...prevParams,
+      [name]: e.target.value,
+    }));
   };
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    setLoading("Loading...");
-    setError(null);
+  const handleSearch = async () => {
+    setStatus({ loading: "Loading", error: null });
     try {
       const data = await fetchUserData(
-        username,
-        location,
-        minRepos,
+        searchParams.username,
+        searchParams.location,
+        searchParams.minRepos,
         perPage,
         page
       );
-      if (
-        location &&
-        data.location &&
-        !data.location.toLowerCase().includes(location.toLowerCase())
-      ) {
-        setError(`No users found in location: ${location}`);
-        setUserData({ total_count: 0, users: [] });
-      } else if (minRepos && data.public_repos < parseInt(minRepos)) {
-        setError(`User has less than ${minRepos} repositories`);
-        setUserData({ total_count: 0, users: [] });
-      } else {
-        setUserData(data);
-      }
+      setUserData(data);
     } catch (error) {
-      setError("Looks like we can't find the user");
-      setUserData([]);
+      setStatus({ loading: "", error: "Looks like we cant find the user" });
+      setUserData({ total_count: 0, users: [] });
     } finally {
-      setLoading(false);
+      setStatus((prev) => ({
+        ...prev,
+        loading: false,
+      }));
     }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setPage(1);
+    handleSearch();
   };
 
   const totalPages = Math.ceil(userData.total_count / perPage);
@@ -74,43 +65,43 @@ const Search = () => {
   return (
     <>
       <form
-        className="flex flex-col w-1/2 justify-center items-center mb-14"
-        onSubmit={handleSearch}
+        className="flex flex-col w-1/3 justify-center items-center mb-16"
+        onSubmit={handleSubmit}
       >
         <input
-          className="border-b-3 border-blue-700 text-lg py-5 px-5 lg:w-[100%] mb-7 placeholder-slate-500"
+          className="border-b-2 border-blue-800 text-lg py-4 px-4 lg:w-[100%] mb-6 placeholder-slate-400"
           onChange={handleChange}
           type="text"
           name="username"
-          value={username}
-          placeholder="enter username"
+          value={searchParams.username}
+          placeholder="enter github username"
         />
         <input
-          className="border-b-3 border-blue-700 text-lg py-5 px-5 lg:w-[100%] mb-7 placeholder-slate-500"
+          className="border-b-2 border-blue-800 text-lg py-4 px-4 lg:w-[100%] mb-6 placeholder-slate-400"
           onChange={handleChange}
           type="text"
           name="location"
-          value={location}
+          value={searchParams.location}
           placeholder="Enter location (optional)"
         />
         <input
-          className="border-b-3 border-blue-700 text-lg py-5 px-5 lg:w-[100%] mb-12 placeholder-slate-500"
+          className="border-b-2 border-blue-800 text-lg py-4 px-4 lg:w-[100%] mb-12 placeholder-slate-400"
           onChange={handleChange}
           type="number"
           name="minRepos"
-          value={minRepos}
+          value={searchParams.minRepos}
           placeholder="Minimum repositories (optional)"
         />
         <button
           type="submit"
-          className="bg-blue-900 text-slate-100 text-2xl py-4 px-2 lg:w-[100%] border rounded-2xl"
+          className="bg-blue-950 text-slate-100 text-2xl py-4 px-2 lg:w-[100%] border rounded-2xl"
         >
           Search
         </button>
       </form>
 
-      {loading && <p>{loading}</p>}
-      {error && <p>{error}</p>}
+      {status.loading && <p>{status.loading}</p>}
+      {status.error && <p>{status.error}</p>}
       {userData && (
         <div className="w-[100%] flex flex-col justify-center items-center">
           <h2>
@@ -155,7 +146,7 @@ const Search = () => {
               <button
                 className="py-4 px-10 bg-gray-700 text-slate-100 rounded-lg"
                 onClick={handleNextPage}
-                disabled={page.length === page.length - 1}
+                disabled={page === totalPages}
               >
                 Next
               </button>

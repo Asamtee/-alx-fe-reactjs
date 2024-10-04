@@ -36,7 +36,14 @@ export const fetchUserData = async (
       users: detailedUsers,
     };
   } catch (err) {
-    console.log("Error Msg:", err);
-    throw err;
+    if (err.response && err.response.status === 403) {
+      throw new Error(
+        "GitHub API rate limit exceeded. Please try again later."
+      );
+    } else if (err.response && err.response.status === 404) {
+      throw new Error("Looks like we cant find the user");
+    } else {
+      throw new Error("Failed to fetch user data. Please try again.");
+    }
   }
 };

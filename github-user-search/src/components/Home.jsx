@@ -1,11 +1,13 @@
 import React from "react";
-import Search from "./search";
+import Search from "./Search";
 
 const Home = () => {
   return (
     <>
       <main className="flex flex-col justify-start items-center w-svw h-svh">
-        <h1 className="text-red-700 mt-9 text-7xl mb-15">GitHub User Search</h1>
+        <h1 className="text-blue-900 mt-8 text-9xl mb-16">
+          GitHub User Search
+        </h1>
         <Search />
       </main>
     </>
